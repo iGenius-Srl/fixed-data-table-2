@@ -1,5 +1,5 @@
 {
-  "name": "fixed-data-table-2",
+  "name": "@igenius_dev/fixed-data-table-2",
   "version": "0.8.13",
   "description": "A React table component designed to allow presenting thousands of rows of data.",
   "main": "main.js",
@@ -49,6 +49,7 @@
     "react-dom": "^15.3.2",
     "react-tools": "^0.12.2",
     "react-tooltip": "^3.2.1",
+    "release-it": "7.5.0",
     "sinon": "^2.0.0-pre.2",
     "style-loader": "^0.8.3",
     "url-loader": "^0.5.5",
