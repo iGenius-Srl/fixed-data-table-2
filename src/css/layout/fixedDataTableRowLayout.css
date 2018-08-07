@@ -31,7 +31,7 @@
 .fixedDataTableRowLayout/fixedColumnsDivider {
   backface-visibility: hidden;
   border-left-style: solid;
-  border-left-width: 1px;
+  border: 0;
   left: 0;
   position: absolute;
   top: 0;

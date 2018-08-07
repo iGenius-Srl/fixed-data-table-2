@@ -12,7 +12,7 @@
 .fixedDataTableCellLayout/main {
   border-right-style: solid;
   border-right-width: 1px;
-  border-width: 0 1px 0 0;
+  border-width: 0 0 0 0;
   box-sizing: border-box;
   display: block;
   overflow: hidden;
@@ -64,5 +64,5 @@
   position: absolute;
   right: 0px;
   visibility: hidden;
-  width: 4px;
+  width: 2px;
 }

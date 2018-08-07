@@ -30,7 +30,7 @@
 .public/fixedDataTable/scrollbarSpacer,
 .public/fixedDataTable/header .public/fixedDataTableCell/main {
   background-color: var(--fbui-desktop-background-light);
-  background-image: linear-gradient(#fff, #efefef);
+  /*background-image: linear-gradient(#fff, #efefef);*/
 }
 
 .public/fixedDataTable/scrollbarSpacer {

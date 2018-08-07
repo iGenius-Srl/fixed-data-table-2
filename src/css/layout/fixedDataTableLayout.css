@@ -11,10 +11,11 @@
 
 .fixedDataTableLayout/main {
   border-style: solid;
-  border-width: 1px;
+  border-width: 0px;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
+  outline: none;
 }
 
 .fixedDataTableLayout/header,

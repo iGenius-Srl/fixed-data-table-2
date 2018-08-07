@@ -54,7 +54,7 @@
 .fixedDataTableCellLayout_main {
   border-right-style: solid;
   border-right-width: 1px;
-  border-width: 0 1px 0 0;
+  border-width: 0 0 0 0;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   display: block;
@@ -107,7 +107,7 @@
   position: absolute;
   right: 0px;
   visibility: hidden;
-  width: 4px;
+  width: 2px;
 }
 /**
  * Copyright Schrodinger, LLC
@@ -160,11 +160,12 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 
 .fixedDataTableLayout_main {
   border-style: solid;
-  border-width: 1px;
+  border-width: 0px;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   overflow: hidden;
   position: relative;
+  outline: none;
 }
 
 .fixedDataTableLayout_header,
@@ -236,7 +237,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
   border-left-style: solid;
-  border-left-width: 1px;
+  border: 0;
   left: 0;
   position: absolute;
   top: 0;
@@ -297,7 +298,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 /* Touching the scroll-track directly makes the scroll-track bolder */
 .ScrollbarLayout_mainHorizontal.public_Scrollbar_mainActive,
 .ScrollbarLayout_mainHorizontal:hover {
-  height: 17px;
+  height: 15px;
 }
 
 .ScrollbarLayout_face {
@@ -321,7 +322,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
  */
 .ScrollbarLayout_face:after {
   border-radius: 6px;
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   -webkit-transition: background-color 250ms ease;
@@ -343,7 +344,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 
 .ScrollbarLayout_faceHorizontal.public_Scrollbar_faceActive:after,
 .ScrollbarLayout_main:hover .ScrollbarLayout_faceHorizontal:after {
-  bottom: calc(4px/2);
+  bottom: calc(4px / 2);
+  top: calc(4px / 2);
 }
 
 .ScrollbarLayout_faceVertical {
@@ -361,6 +363,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 
 .ScrollbarLayout_main:hover .ScrollbarLayout_faceVertical:after,
 .ScrollbarLayout_faceVertical.public_Scrollbar_faceActive:after {
-  left: calc(4px/2);
-  right: calc(4px/2);
+  left: calc(4px / 2);
+  right: calc(4px / 2);
 }

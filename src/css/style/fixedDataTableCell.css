@@ -26,8 +26,9 @@
 }
 
 .public/fixedDataTableCell/columnResizerKnob {
-  background-color: #0284ff;
+  background-color: #d8cbff;
 }
-.public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/cellContent {
-	margin-left: 12px;
+.public/fixedDataTableCell/hasReorderHandle
+  .public/fixedDataTableCell/cellContent {
+  margin-left: 12px;
 }

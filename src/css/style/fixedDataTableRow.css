@@ -26,9 +26,15 @@
 }
 
 .public/fixedDataTableRow/columnsShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
+  background: 0 0
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==)
+    repeat-y;
 }
 
 .public/fixedDataTableRow/columnsRightShadow {
   transform: rotate(180deg);
+}
+
+.public/fixedDataTable/bodyRow {
+  border-bottom: 1px solid var(--border-color);
 }
