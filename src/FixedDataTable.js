@@ -594,11 +594,8 @@ var FixedDataTable = createReactClass({
         this.props.scrollTop !== nextProps.scrollTop ||
         this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
+      this._didScrollStop();
     }
-
-    // Cancel any pending debounced scroll handling and handle immediately.
-    this._didScrollStop.reset();
-    this._didScrollStopSync();
 
     this.setState(this._calculateState(nextProps, this.state));
   },
@@ -684,6 +681,7 @@ var FixedDataTable = createReactClass({
           onScroll={this._onVerticalScroll}
           verticalTop={bodyOffsetTop}
           position={state.scrollY}
+          touchEnabled={state.touchScrollEnabled}
         />;
     }
 
@@ -697,6 +695,7 @@ var FixedDataTable = createReactClass({
           onScroll={this._onHorizontalScroll}
           position={state.scrollX}
           size={scrollbarXWidth}
+          touchEnabled={state.touchScrollEnabled}
         />;
     }
 
@@ -796,7 +795,10 @@ var FixedDataTable = createReactClass({
           style={{top: footOffsetTop}}
         />;
     }
-
+    var tabIndex = null
+    if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
+      tabIndex = 0
+    }
     return (
       <div
         className={joinClasses(
@@ -804,7 +806,7 @@ var FixedDataTable = createReactClass({
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
-        tabIndex={0}
+        tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
@@ -1169,7 +1171,7 @@ var FixedDataTable = createReactClass({
 
     // If vertical scrollbar is necessary, adjust the table width to give it room
     var adjustedWidth = props.width;
-    if (maxScrollY) {
+    if (maxScrollY && props.showScrollbarY) {
       adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
     }
 
@@ -1298,7 +1300,7 @@ var FixedDataTable = createReactClass({
       // We also need to make sure we don't double-dip and adjust the width twice
       const notAdjusted = adjustedWidth === props.width;
       maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
-      if (notAdjusted && maxScrollY) {
+      if (notAdjusted && maxScrollY && props.showScrollbarY) {
         adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
       }
     }
