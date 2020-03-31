@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-import React from 'React';
+import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import FixedDataTableRowBuffer from 'FixedDataTableRowBuffer';
@@ -24,6 +24,7 @@ var FixedDataTableBufferedRows = createReactClass({
   displayName: 'FixedDataTableBufferedRows',
 
   propTypes: {
+    ariaIndexOffset: PropTypes.number,
     bufferRowCount: PropTypes.number,
     isScrolling: PropTypes.bool,
     defaultRowHeight: PropTypes.number.isRequired,
@@ -165,6 +166,7 @@ var FixedDataTableBufferedRows = createReactClass({
           key={rowKey}
           isScrolling={props.isScrolling}
           index={rowIndex}
+          ariaIndex={rowIndex+props.ariaIndexOffset}
           width={props.width}
           height={currentRowHeight}
           subRowHeight={currentSubRowHeight}
@@ -212,4 +214,4 @@ var FixedDataTableBufferedRows = createReactClass({
   },
 });
 
-module.exports = FixedDataTableBufferedRows;
+export default FixedDataTableBufferedRows;

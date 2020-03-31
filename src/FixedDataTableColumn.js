@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-import React from 'React';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -199,4 +199,4 @@ class FixedDataTableColumn extends React.Component {
  }
 }
 
-module.exports = FixedDataTableColumn;
+export default FixedDataTableColumn;

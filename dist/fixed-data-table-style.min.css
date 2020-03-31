@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.20 
+ * FixedDataTable v0.8.28 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -56,12 +56,10 @@
 }
 
 .public_fixedDataTable_topShadow {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
   background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTable_bottomShadow {
-  background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
   background-image: linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
@@ -118,8 +116,7 @@
 	position: absolute;
 	top: 50%;
 	left: 1px;
-	-webkit-transform: translateY(-50%);
-	        transform: translateY(-50%);
+	transform: translateY(-50%);
 }
 /**
  * Copyright Schrodinger, LLC
@@ -167,13 +164,11 @@
 }
 
 .public_fixedDataTableRow_columnsShadow {
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
   background-image: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTableRow_columnsRightShadow {
-  -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .public_fixedDataTable_bodyRow {

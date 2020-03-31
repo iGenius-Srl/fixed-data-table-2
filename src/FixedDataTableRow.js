@@ -12,7 +12,7 @@
 
 'use strict';
 
-import React from 'React';
+import React from 'react';
 import PropTypes from 'prop-types';
 import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
 import Scrollbar from 'Scrollbar';
@@ -146,6 +146,13 @@ class FixedDataTableRowImpl extends React.Component {
     onColumnReorderEnd: PropTypes.func,
 
     touchEnabled: PropTypes.bool,
+
+    isHeaderOrFooter: PropTypes.bool,
+
+    /**
+    * The value of the aria-rowindex attribute.
+    */
+    ariaIndex: PropTypes.number,
   };
 
   render() /*object*/ {
@@ -181,6 +188,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        isHeaderOrFooter={this.props.isHeaderOrFooter}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = this._getColumnsWidth(this.props.fixedRightColumns);
@@ -204,6 +212,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        isHeaderOrFooter={this.props.isHeaderOrFooter}
       />;
     var fixedRightColumnsShadow = fixedRightColumnsWidth ?
       this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5) : null;
@@ -228,6 +237,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        isHeaderOrFooter={this.props.isHeaderOrFooter}
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
@@ -243,7 +253,9 @@ class FixedDataTableRowImpl extends React.Component {
       var spacerStyles = {
         width: scrollbarOffset,
         height: this.props.height,
-        left: this.props.width - scrollbarOffset,
+        // Since the box-sizing = border-box the border on the table is included in the width
+        // so we need to account for the left and right border
+        left: this.props.width - scrollbarOffset - 2,
       };
       scrollbarSpacer =
         <div 
@@ -255,6 +267,8 @@ class FixedDataTableRowImpl extends React.Component {
     return (
       <div
         className={joinClasses(className, this.props.className)}
+        role="row"
+        aria-rowindex={this.props.ariaIndex}
         onClick={this.props.onClick ? this._onClick : null}
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
         onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
@@ -469,4 +483,4 @@ class FixedDataTableRow extends React.Component {
 }
 
 
-module.exports = FixedDataTableRow;
+export default FixedDataTableRow;

@@ -13,7 +13,7 @@
 
 /*eslint no-bitwise:1*/
 
-import React from 'React';
+import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
@@ -467,6 +467,11 @@ var FixedDataTable = createReactClass({
   },
 
   componentWillUnmount() {
+    this._divRef && this._divRef.removeEventListener(
+      'wheel',
+      this._wheelHandler.onWheel,
+      { passive: false }
+    );
     this._wheelHandler = null;
     this._touchHandler = null;
 
@@ -582,22 +587,23 @@ var FixedDataTable = createReactClass({
   },
 
   componentDidMount() {
+    this._divRef && this._divRef.addEventListener(
+      'wheel',
+      this._wheelHandler.onWheel,
+      { passive: false }
+    );
     this._reportContentHeight();
   },
 
   componentWillReceiveProps(/*object*/ nextProps) {
-    var newOverflowX = nextProps.overflowX;
-    var newOverflowY = nextProps.overflowY;
-
     // In the case of controlled scrolling, notify.
     if (this.props.ownerHeight !== nextProps.ownerHeight ||
         this.props.scrollTop !== nextProps.scrollTop ||
         this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
-      this._didScrollStop();
     }
 
-    this.setState(this._calculateState(nextProps, this.state));
+    this.setState(this._calculateState(nextProps, this.state), this._didScrollStop);
   },
 
   componentDidUpdate() {
@@ -605,6 +611,8 @@ var FixedDataTable = createReactClass({
   },
 
   _onRef(div) {
+    this._divRef = div;
+
     if (this.props.stopReactWheelPropagation) {
       this._wheelHandler.setRoot(div);
     }
@@ -618,6 +626,8 @@ var FixedDataTable = createReactClass({
     var maxScrollY = this.state.maxScrollY;
     var showScrollbarX = state.maxScrollX > 0 && state.overflowX !== 'hidden' && state.showScrollbarX !== false;
     var showScrollbarY = this._showScrollbarY(state);
+
+    var ariaAttributes = this._calculateAriaAttributes(state);
 
     var groupHeader;
     if (state.useGroupHeader) {
@@ -643,6 +653,8 @@ var FixedDataTable = createReactClass({
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
           showScrollbarY={showScrollbarY}
+          isHeaderOrFooter={true}
+          ariaIndex={ariaAttributes.groupHeaderAriaIndex}
         />
       );
     }
@@ -734,10 +746,12 @@ var FixedDataTable = createReactClass({
           scrollableColumns={state.footScrollableColumns}
           scrollLeft={state.scrollX}
           showScrollbarY={showScrollbarY}
+          isHeaderOrFooter={true}
+          ariaIndex={ariaAttributes.footerAriaIndex}
         />;
     }
 
-    var rows = this._renderRows(bodyOffsetTop);
+    var rows = this._renderRows(bodyOffsetTop, ariaAttributes.ariaRowIndexOffset);
 
     var header =
       <FixedDataTableRow
@@ -765,6 +779,8 @@ var FixedDataTable = createReactClass({
         isColumnReordering={!!state.isColumnReordering}
         columnReorderingData={state.columnReorderingData}
         showScrollbarY={showScrollbarY}
+        isHeaderOrFooter={true}
+        ariaIndex={ariaAttributes.headerAriaIndex}
       />;
 
     var topShadow;
@@ -806,13 +822,14 @@ var FixedDataTable = createReactClass({
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
+        role="grid"
+        aria-rowcount={ariaAttributes.ariaRowCount}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
-        onWheel={this._wheelHandler.onWheel}
-        onTouchStart={this._touchHandler.onTouchStart}
-        onTouchEnd={this._touchHandler.onTouchEnd}
-        onTouchMove={this._touchHandler.onTouchMove}
-        onTouchCancel={this._touchHandler.onTouchCancel}
+        onTouchStart={state.touchScrollEnabled ? this._touchHandler.onTouchStart : null}
+        onTouchEnd={state.touchScrollEnabled ? this._touchHandler.onTouchEnd : null}
+        onTouchMove={state.touchScrollEnabled ? this._touchHandler.onTouchMove : null}
+        onTouchCancel={state.touchScrollEnabled ? this._touchHandler.onTouchCancel : null}
         ref={this._onRef}
         style={{height: state.height, width: state.width}}>
         <div
@@ -832,12 +849,13 @@ var FixedDataTable = createReactClass({
     );
   },
 
-  _renderRows(/*number*/ offsetTop) /*object*/ {
+  _renderRows(/*number*/ offsetTop, /*number*/ ariaIndexOffset) /*object*/ {
     var state = this.state;
     var showScrollbarY = this._showScrollbarY(state);
 
     return (
       <FixedDataTableBufferedRows
+        ariaIndexOffset={ariaIndexOffset}
         isScrolling={this._isScrolling}
         defaultRowHeight={state.rowHeight}
         firstRowIndex={state.firstRowIndex}
@@ -873,6 +891,46 @@ var FixedDataTable = createReactClass({
         showScrollbarY={showScrollbarY}
       />
     );
+  },
+
+  /**
+   * This is needed to calculate the aria attributes for the rows and grid. Specifically
+   * the aria-rowindex and aria-rowcount. Note that aria-rowindex is 1-indexed based.
+   */
+  _calculateAriaAttributes(/*object*/ state) /*object*/ {
+    // Default index values
+    var groupHeaderAriaIndex = 1;
+
+    // assuming no group header
+    var headerAriaIndex = 1;
+
+    // assuming no group header
+    var footerAriaIndex = state.rowsCount + 2; 
+
+    // assuming no group header or footer
+    var ariaRowCount = state.rowsCount + 1; 
+
+    // offset to add to rowIndex (0-indexed) to calculate aria-rowindex
+    // Need to add 1 for the header
+    var ariaRowIndexOffset = 2;
+
+    if (state.useGroupHeader) {
+      headerAriaIndex++;
+      ariaRowCount++;
+      footerAriaIndex++;
+      ariaRowIndexOffset++;
+    }
+    if (state.footerHeight) {
+      ariaRowCount++;
+    }
+
+    return {
+      groupHeaderAriaIndex,
+      headerAriaIndex,
+      footerAriaIndex,
+      ariaRowCount,
+      ariaRowIndexOffset,
+    };
   },
 
   /**
@@ -1410,6 +1468,9 @@ var FixedDataTable = createReactClass({
     if (!this._isScrolling) {
       this._didScrollStart();
     }
+
+    var newState = {};
+
     var x = this.state.scrollX;
     if (Math.abs(deltaY) > Math.abs(deltaX) &&
         this.props.overflowY !== 'hidden') {
@@ -1420,13 +1481,13 @@ var FixedDataTable = createReactClass({
           0,
           scrollState.contentHeight - this.state.bodyHeight
         );
-        this.setState({
+        newState = {
           firstRowIndex: scrollState.index,
           firstRowOffset: scrollState.offset,
           scrollY: scrollState.position,
           scrollContentHeight: scrollState.contentHeight,
           maxScrollY: maxScrollY,
-        });
+        };
       }
     } else if (deltaX && this.props.overflowX !== 'hidden') {
       x += deltaX;
@@ -1438,13 +1499,13 @@ var FixedDataTable = createReactClass({
       //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
       var onHorizontalScroll = this.props.onHorizontalScroll;
       if (onHorizontalScroll ? onHorizontalScroll(roundedX) : true) {
-        this.setState({
+        newState = {
           scrollX: roundedX,
-        });
+        };
       }
     }
 
-    this._didScrollStop();
+    this.setState(newState, this._didScrollStop);
   },
 
   _onHorizontalScroll(/*number*/ scrollPos) {
@@ -1456,15 +1517,17 @@ var FixedDataTable = createReactClass({
       this._didScrollStart();
     }
 
+    var newState = {};
+
     var roundedScrollPos = Math.round(scrollPos);
 
     var onHorizontalScroll = this.props.onHorizontalScroll;
     if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
-      this.setState({
+      newState = {
         scrollX: roundedScrollPos,
-      });
+      };
     }
-    this._didScrollStop();
+    this.setState(newState, this._didScrollStop);
   },
 
   _onVerticalScroll(/*number*/ scrollPos) {
@@ -1475,18 +1538,19 @@ var FixedDataTable = createReactClass({
     if (!this._isScrolling) {
       this._didScrollStart();
     }
+    var newState = {};
     var scrollState = this._scrollHelper.scrollTo(Math.round(scrollPos));
 
     var onVerticalScroll = this.props.onVerticalScroll;
     if (onVerticalScroll ? onVerticalScroll(scrollState.position) : true) {
-      this.setState({
+      newState = {
         firstRowIndex: scrollState.index,
         firstRowOffset: scrollState.offset,
         scrollY: scrollState.position,
         scrollContentHeight: scrollState.contentHeight,
-      });
-      this._didScrollStop();
+      };
     }
+    this.setState(newState, this._didScrollStop);
   },
 
   _didScrollStart() {
@@ -1574,4 +1638,4 @@ var HorizontalScrollbar = createReactClass({
   },
 });
 
-module.exports = FixedDataTable;
+export default FixedDataTable;

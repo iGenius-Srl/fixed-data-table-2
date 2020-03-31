@@ -13,7 +13,7 @@
 'use strict';
 
 import Locale from 'Locale';
-import React from 'React';
+import React from 'react';
 import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
 import FixedDataTableColumn from 'FixedDataTableColumn';
 
@@ -101,4 +101,4 @@ var FixedDataTableHelper = {
   mapColumns,
 };
 
-module.exports = FixedDataTableHelper;
+export default FixedDataTableHelper;

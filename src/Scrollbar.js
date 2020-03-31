@@ -12,14 +12,14 @@
 
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Keys from 'Keys';
-import React from 'React';
+import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import ReactDOM from 'ReactDOM';
 import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 import ReactWheelHandler from 'ReactWheelHandler';
 
-import cssVar from 'cssVar';
+const cssVar = require('cssVar');
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
@@ -37,11 +37,11 @@ var KEYBOARD_SCROLL_AMOUNT = 40;
 var _lastScrolledScrollbar = null;
 
 var getTouchX = function(e) {
-  return Math.round(e.targetTouches[0].pageX - e.target.getBoundingClientRect().x);
+  return Math.round(e.targetTouches[0].clientX - e.target.getBoundingClientRect().x);
 };
 
 var getTouchY = function(e) {
-  return Math.round(e.targetTouches[0].pageY - e.target.getBoundingClientRect().y);
+  return Math.round(e.targetTouches[0].clientY - e.target.getBoundingClientRect().y);
 };
 
 var Scrollbar = createReactClass({
@@ -183,7 +183,6 @@ var Scrollbar = createReactClass({
         onTouchEnd={this._onTouchEnd}
         onTouchMove={this._onTouchMove}
         onTouchStart={this._onTouchStart}
-        onWheel={this._wheelHandler.onWheel}
         className={mainClassName}
         ref={this.rootRef}
         style={mainStyle}>
@@ -209,6 +208,11 @@ var Scrollbar = createReactClass({
   },
 
   componentDidMount() {
+    this.root && this.root.addEventListener(
+        'wheel',
+        this._wheelHandler.onWheel,
+        { passive: false }
+    );
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMouseMove,
       this._onMouseMoveEnd,
@@ -224,6 +228,11 @@ var Scrollbar = createReactClass({
   },
 
   componentWillUnmount() {
+    this.root && this.root.removeEventListener(
+        'wheel',
+        this._wheelHandler.onWheel,
+        { passive: false }
+    );
     this._nextState = null;
     this._mouseMoveTracker.releaseMouseMoves();
     if (_lastScrolledScrollbar === this) {
@@ -554,4 +563,4 @@ Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
 Scrollbar.SIZE = parseInt(cssVar('scrollbar-size'), 10);
 Scrollbar.OFFSET = 1;
 
-module.exports = Scrollbar;
+export default Scrollbar;

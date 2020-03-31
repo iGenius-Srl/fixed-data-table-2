@@ -12,7 +12,7 @@
 
 'use strict';
 
-import React from 'React';
+import React from 'react';
 
 function getTotalWidth(/*array*/ columns) /*number*/ {
   var totalWidth = 0;
@@ -152,4 +152,4 @@ var FixedDataTableWidthHelper = {
   adjustColumnGroupWidths,
 };
 
-module.exports = FixedDataTableWidthHelper;
+export default FixedDataTableWidthHelper;
